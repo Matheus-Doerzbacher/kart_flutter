@@ -10,7 +10,7 @@ import 'package:result_dart/result_dart.dart';
 typedef BodyResponse = String;
 
 class ClientHttp {
-  final String _baseUrl = 'http://192.168.106.88:8000/api/v1';
+  final String _baseUrl = 'http://localhost:8000/api/v1';
 
   String? _bearerToken;
 
