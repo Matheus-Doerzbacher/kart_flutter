@@ -10,19 +10,17 @@ class HomeViewModel extends ChangeNotifier {
   HomeViewModel({required TemporadaRepository temporadaRepository})
     : _temporadaRepository = temporadaRepository;
 
-  final _temporadas = <Temporada>[];
-  List<Temporada> get temporadas => _temporadas;
+  Temporada? _temporadaAtual;
+  Temporada? get temporadaAtual => _temporadaAtual;
 
   // COMMANDS
-  late final getTemporadas = Command0(_getTemporadas);
+  late final getTemporadaAtual = Command0(_getTemporadaAtual);
 
-  AsyncResult<Unit> _getTemporadas() async {
-    final result = await _temporadaRepository.getTemporadas();
+  AsyncResult<Unit> _getTemporadaAtual() async {
+    final result = await _temporadaRepository.getTemporadaAtual();
     return result.fold(
-      (temporadas) {
-        _temporadas
-          ..clear()
-          ..addAll(temporadas);
+      (temporada) {
+        _temporadaAtual = temporada;
         notifyListeners();
         return const Success(unit);
       },

@@ -24,4 +24,17 @@ class TemporadaService {
       return Failure(Exception(e));
     }
   }
+
+  AsyncResult<Temporada> getTemporadaAtual() async {
+    try {
+      final response = await _clientHttp.get('/temporadas/atual');
+      return response.fold((responseBody) {
+        final data = jsonDecode(responseBody) as Map<String, dynamic>;
+        return Success(Temporada.fromJson(data));
+      }, Failure.new);
+    } catch (e) {
+      _log.severe('Erro ao buscar temporada atual', e);
+      return Failure(Exception(e));
+    }
+  }
 }

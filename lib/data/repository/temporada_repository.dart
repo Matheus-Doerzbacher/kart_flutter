@@ -11,4 +11,8 @@ class TemporadaRepository {
   AsyncResult<List<Temporada>> getTemporadas() async {
     return _temporadaService.getTemporadas();
   }
+
+  AsyncResult<Temporada> getTemporadaAtual() async {
+    return _temporadaService.getTemporadaAtual();
+  }
 }

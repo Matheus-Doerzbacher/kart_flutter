@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kart_flutter/config/dependencies.dart';
+import 'package:kart_flutter/ui/core/theme/app_theme.dart';
 import 'package:kart_flutter/ui/home/home_page.dart';
 import 'package:kart_flutter/ui/home/home_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -18,19 +19,10 @@ class MyApp extends StatelessWidget {
     final viewModel = context.read<HomeViewModel>();
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.deepPurple,
-          brightness: Brightness.dark,
-        ),
-        useMaterial3: true,
-      ),
+      theme: AppTheme.light(),
+      darkTheme: AppTheme.dark(),
       debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.dark,
+      themeMode: ThemeMode.light,
       home: HomePage(viewModel: viewModel),
     );
   }
