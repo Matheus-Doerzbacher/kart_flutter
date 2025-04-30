@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:kart_flutter/config/dependencies.dart';
 import 'package:kart_flutter/ui/home/home_page.dart';
+import 'package:kart_flutter/ui/home/home_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(MultiProvider(providers: providers, child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -11,6 +15,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final viewModel = context.read<HomeViewModel>();
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -26,7 +31,7 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.dark,
-      home: const HomePage(),
+      home: HomePage(viewModel: viewModel),
     );
   }
 }
