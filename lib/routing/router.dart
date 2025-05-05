@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 // Criando o router como uma instância única
 GoRouter appRouter() => GoRouter(
   initialLocation: Routes.home,
+  // initialLocation: '/${Routes.temporadas}/1',
   debugLogDiagnostics: true,
   routes: [
     ShellRoute(

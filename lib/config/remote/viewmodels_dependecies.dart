@@ -16,8 +16,11 @@ class ViewModelsDependecies {
       ),
       ChangeNotifierProvider(
         create:
-            (context) =>
-                TemporadasViewmodel(temporadaRepository: context.read()),
+            (context) => TemporadasViewmodel(
+              temporadaRepository: context.read(),
+              pilotoRepository: context.read(),
+              corridaRepository: context.read(),
+            ),
       ),
     ];
   }
