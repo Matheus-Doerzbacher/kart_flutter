@@ -9,7 +9,7 @@ part of 'piloto.dart';
 _Piloto _$PilotoFromJson(Map<String, dynamic> json) => _Piloto(
   idPiloto: (json['id_piloto'] as num?)?.toInt(),
   nome: json['nome'] as String,
-  urlFoto: json['url_foto'] as String,
+  urlFoto: json['url_foto'] as String?,
   temporadaAtual:
       json['temporada_atual'] == null
           ? null

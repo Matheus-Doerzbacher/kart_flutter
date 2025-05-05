@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Piloto {
 
-@JsonKey(name: 'id_piloto') int? get idPiloto; String get nome;@JsonKey(name: 'url_foto') String get urlFoto;@JsonKey(name: 'temporada_atual') TemporadaPiloto? get temporadaAtual;
+@JsonKey(name: 'id_piloto') int? get idPiloto; String get nome;@JsonKey(name: 'url_foto') String? get urlFoto;@JsonKey(name: 'temporada_atual') TemporadaPiloto? get temporadaAtual;
 /// Create a copy of Piloto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $PilotoCopyWith<$Res>  {
   factory $PilotoCopyWith(Piloto value, $Res Function(Piloto) _then) = _$PilotoCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'id_piloto') int? idPiloto, String nome,@JsonKey(name: 'url_foto') String urlFoto,@JsonKey(name: 'temporada_atual') TemporadaPiloto? temporadaAtual
+@JsonKey(name: 'id_piloto') int? idPiloto, String nome,@JsonKey(name: 'url_foto') String? urlFoto,@JsonKey(name: 'temporada_atual') TemporadaPiloto? temporadaAtual
 });
 
 
@@ -66,12 +66,12 @@ class _$PilotoCopyWithImpl<$Res>
 
 /// Create a copy of Piloto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? idPiloto = freezed,Object? nome = null,Object? urlFoto = null,Object? temporadaAtual = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? idPiloto = freezed,Object? nome = null,Object? urlFoto = freezed,Object? temporadaAtual = freezed,}) {
   return _then(_self.copyWith(
 idPiloto: freezed == idPiloto ? _self.idPiloto : idPiloto // ignore: cast_nullable_to_non_nullable
 as int?,nome: null == nome ? _self.nome : nome // ignore: cast_nullable_to_non_nullable
-as String,urlFoto: null == urlFoto ? _self.urlFoto : urlFoto // ignore: cast_nullable_to_non_nullable
-as String,temporadaAtual: freezed == temporadaAtual ? _self.temporadaAtual : temporadaAtual // ignore: cast_nullable_to_non_nullable
+as String,urlFoto: freezed == urlFoto ? _self.urlFoto : urlFoto // ignore: cast_nullable_to_non_nullable
+as String?,temporadaAtual: freezed == temporadaAtual ? _self.temporadaAtual : temporadaAtual // ignore: cast_nullable_to_non_nullable
 as TemporadaPiloto?,
   ));
 }
@@ -95,12 +95,12 @@ $TemporadaPilotoCopyWith<$Res>? get temporadaAtual {
 @JsonSerializable()
 
 class _Piloto implements Piloto {
-   _Piloto({@JsonKey(name: 'id_piloto') this.idPiloto, required this.nome, @JsonKey(name: 'url_foto') required this.urlFoto, @JsonKey(name: 'temporada_atual') this.temporadaAtual});
+   _Piloto({@JsonKey(name: 'id_piloto') this.idPiloto, required this.nome, @JsonKey(name: 'url_foto') this.urlFoto, @JsonKey(name: 'temporada_atual') this.temporadaAtual});
   factory _Piloto.fromJson(Map<String, dynamic> json) => _$PilotoFromJson(json);
 
 @override@JsonKey(name: 'id_piloto') final  int? idPiloto;
 @override final  String nome;
-@override@JsonKey(name: 'url_foto') final  String urlFoto;
+@override@JsonKey(name: 'url_foto') final  String? urlFoto;
 @override@JsonKey(name: 'temporada_atual') final  TemporadaPiloto? temporadaAtual;
 
 /// Create a copy of Piloto
@@ -136,7 +136,7 @@ abstract mixin class _$PilotoCopyWith<$Res> implements $PilotoCopyWith<$Res> {
   factory _$PilotoCopyWith(_Piloto value, $Res Function(_Piloto) _then) = __$PilotoCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'id_piloto') int? idPiloto, String nome,@JsonKey(name: 'url_foto') String urlFoto,@JsonKey(name: 'temporada_atual') TemporadaPiloto? temporadaAtual
+@JsonKey(name: 'id_piloto') int? idPiloto, String nome,@JsonKey(name: 'url_foto') String? urlFoto,@JsonKey(name: 'temporada_atual') TemporadaPiloto? temporadaAtual
 });
 
 
@@ -153,12 +153,12 @@ class __$PilotoCopyWithImpl<$Res>
 
 /// Create a copy of Piloto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? idPiloto = freezed,Object? nome = null,Object? urlFoto = null,Object? temporadaAtual = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? idPiloto = freezed,Object? nome = null,Object? urlFoto = freezed,Object? temporadaAtual = freezed,}) {
   return _then(_Piloto(
 idPiloto: freezed == idPiloto ? _self.idPiloto : idPiloto // ignore: cast_nullable_to_non_nullable
 as int?,nome: null == nome ? _self.nome : nome // ignore: cast_nullable_to_non_nullable
-as String,urlFoto: null == urlFoto ? _self.urlFoto : urlFoto // ignore: cast_nullable_to_non_nullable
-as String,temporadaAtual: freezed == temporadaAtual ? _self.temporadaAtual : temporadaAtual // ignore: cast_nullable_to_non_nullable
+as String,urlFoto: freezed == urlFoto ? _self.urlFoto : urlFoto // ignore: cast_nullable_to_non_nullable
+as String?,temporadaAtual: freezed == temporadaAtual ? _self.temporadaAtual : temporadaAtual // ignore: cast_nullable_to_non_nullable
 as TemporadaPiloto?,
   ));
 }

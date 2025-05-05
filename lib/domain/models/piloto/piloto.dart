@@ -9,7 +9,7 @@ sealed class Piloto with _$Piloto {
   factory Piloto({
     @JsonKey(name: 'id_piloto') int? idPiloto,
     required String nome,
-    @JsonKey(name: 'url_foto') required String urlFoto,
+    @JsonKey(name: 'url_foto') String? urlFoto,
     @JsonKey(name: 'temporada_atual') TemporadaPiloto? temporadaAtual,
   }) = _Piloto;
 

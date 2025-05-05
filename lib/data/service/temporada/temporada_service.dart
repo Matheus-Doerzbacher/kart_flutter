@@ -37,4 +37,19 @@ class TemporadaService {
       return Failure(Exception(e));
     }
   }
+
+  AsyncResult<int> getParticipantesDaTemporada(int idTemporada) async {
+    try {
+      final response = await _clientHttp.get(
+        '/temporadas/$idTemporada/participantes',
+      );
+      return response.fold((responseBody) {
+        final data = jsonDecode(responseBody) as int;
+        return Success(data);
+      }, Failure.new);
+    } catch (e) {
+      _log.severe('Erro ao buscar participantes da temporada', e);
+      return Failure(Exception(e));
+    }
+  }
 }

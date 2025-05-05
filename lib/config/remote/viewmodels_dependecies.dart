@@ -6,7 +6,12 @@ class ViewModelsDependecies {
   List<SingleChildWidget> get viewModelsRemote {
     return [
       ChangeNotifierProvider(
-        create: (context) => HomeViewModel(temporadaRepository: context.read()),
+        create:
+            (context) => HomeViewModel(
+              temporadaRepository: context.read(),
+              pilotoRepository: context.read(),
+              corridaRepository: context.read(),
+            ),
       ),
     ];
   }
