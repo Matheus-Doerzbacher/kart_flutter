@@ -21,8 +21,15 @@ class HomeViewModel extends ChangeNotifier {
        _pilotoRepository = pilotoRepository,
        _corridaRepository = corridaRepository;
 
-  Temporada? _temporadaAtual;
-  Temporada? get temporadaAtual => _temporadaAtual;
+  List<Temporada>? _temporadas;
+  List<Temporada>? get temporadas => _temporadas;
+
+  Temporada? _temporadaSelecionada;
+  Temporada? get temporadaSelecionada => _temporadaSelecionada;
+  set temporadaSelecionada(Temporada? value) {
+    _temporadaSelecionada = value;
+    notifyListeners();
+  }
 
   List<Piloto>? _pilotosDaTemporada;
   List<Piloto>? get pilotosDaTemporada => _pilotosDaTemporada;
@@ -35,26 +42,34 @@ class HomeViewModel extends ChangeNotifier {
 
   // COMMANDS
   late final getData = Command0(_getData);
+  late final getTemporada = Command1(_getTemporada);
 
-  AsyncResult<Unit> _getData() async {
-    _temporadaAtual =
-        await _temporadaRepository.getTemporadaAtual().getOrThrow();
-
+  Future<void> _atualizarDados(Temporada temporada) async {
     _pilotosDaTemporada =
         await _pilotoRepository
-            .getPilotosDaTemporada(_temporadaAtual!.idTemporada!)
+            .getPilotosDaTemporada(temporada.idTemporada!)
             .getOrThrow();
 
     _corridasDaTemporada =
         await _corridaRepository
-            .getCorridasDaTemporada(_temporadaAtual!.idTemporada!)
+            .getCorridasDaTemporada(_temporadaSelecionada!.idTemporada!)
             .getOrThrow();
 
     _participantesDaTemporada =
         await _temporadaRepository
-            .getParticipantesDaTemporada(_temporadaAtual!.idTemporada!)
+            .getParticipantesDaTemporada(_temporadaSelecionada!.idTemporada!)
             .getOrThrow();
+  }
 
+  AsyncResult<Unit> _getTemporada(Temporada temporada) async {
+    _temporadaSelecionada = temporada;
+    await _atualizarDados(_temporadaSelecionada!);
+    return const Success(unit);
+  }
+
+  AsyncResult<Unit> _getData() async {
+    _temporadas = await _temporadaRepository.getTemporadas().getOrThrow();
+    await _getTemporada(_temporadas!.firstWhere((t) => t.isTemporadaAtual));
     return const Success(unit);
   }
 }

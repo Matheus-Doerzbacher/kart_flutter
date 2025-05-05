@@ -6,7 +6,7 @@ import 'package:kart_flutter/ui/corridas/corridas_page.dart';
 import 'package:kart_flutter/ui/home/home_page.dart';
 import 'package:kart_flutter/ui/perfil/perfil_page.dart';
 import 'package:kart_flutter/ui/pilotos/pilotos_page.dart';
-import 'package:kart_flutter/ui/temporadas/temporada_page.dart';
+import 'package:kart_flutter/ui/temporadas/temporadas_page.dart';
 import 'package:provider/provider.dart';
 
 // Criando o router como uma instância única
@@ -42,9 +42,13 @@ GoRouter appRouter() => GoRouter(
       ],
     ),
     GoRoute(
-      path: '/${Routes.temporadas}',
+      path: '/${Routes.temporadas}/:idTemporada',
       name: Routes.temporadas,
-      builder: (context, state) => const TemporadaPage(),
+      builder:
+          (context, state) => TemporadasPage(
+            viewModel: context.read(),
+            idTemporada: int.parse(state.pathParameters['idTemporada']!),
+          ),
     ),
   ],
 );

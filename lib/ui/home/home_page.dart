@@ -43,16 +43,19 @@ class _HomePageState extends State<HomePage> {
             listenable: Listenable.merge([
               widget.viewModel,
               widget.viewModel.getData,
+              widget.viewModel.getTemporada,
             ]),
             builder: (context, _) {
               final isRunning = widget.viewModel.getData.isRunning;
+              final temporadas = widget.viewModel.temporadas;
+              final temporadaSelecionada =
+                  widget.viewModel.temporadaSelecionada;
 
               if (isRunning) {
                 return const Center(child: CircularProgressIndicator());
               }
 
-              final temporadaAtual = widget.viewModel.temporadaAtual;
-              if (temporadaAtual == null) {
+              if (temporadaSelecionada == null) {
                 return const Center(
                   child: Text('Nenhuma temporada encontrada'),
                 );
@@ -60,6 +63,30 @@ class _HomePageState extends State<HomePage> {
 
               return Column(
                 children: [
+                  DropdownButton(
+                    isExpanded: true,
+                    value: temporadaSelecionada,
+                    items:
+                        temporadas!
+                            .map(
+                              (e) => DropdownMenuItem(
+                                value: e,
+                                child: Row(
+                                  children: [
+                                    Text(e.descricao),
+                                    if (e.isTemporadaAtual) ...[
+                                      const SizedBox(width: 8),
+                                      const Icon(Icons.star, size: 16),
+                                    ],
+                                  ],
+                                ),
+                              ),
+                            )
+                            .toList(),
+                    onChanged: (value) {
+                      widget.viewModel.getTemporada.execute(value!);
+                    },
+                  ),
                   Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -83,39 +110,40 @@ class _HomePageState extends State<HomePage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                temporadaAtual.descricao,
+                                temporadaSelecionada.descricao,
                                 style: Theme.of(context).textTheme.titleLarge
                                     ?.copyWith(fontWeight: FontWeight.bold),
                               ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withAlpha(50),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 4,
+                              if (temporadaSelecionada.isTemporadaAtual)
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withAlpha(50),
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
-                                  child: Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.star_purple500_sharp,
-                                        size: 16,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        'Ativa',
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.bodyMedium?.copyWith(
-                                          fontWeight: FontWeight.w800,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.star_purple500_sharp,
+                                          size: 16,
                                         ),
-                                      ),
-                                    ],
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          'Ativa',
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.bodyMedium?.copyWith(
+                                            fontWeight: FontWeight.w800,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
                             ],
                           ),
                           // Segunda linha
@@ -150,7 +178,14 @@ class _HomePageState extends State<HomePage> {
                                   Theme.of(context).colorScheme.primary,
                             ),
                             onPressed:
-                                () => context.pushNamed(Routes.temporadas),
+                                () => context.pushNamed(
+                                  Routes.temporadas,
+                                  pathParameters: {
+                                    'idTemporada':
+                                        temporadaSelecionada.idTemporada!
+                                            .toString(),
+                                  },
+                                ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
