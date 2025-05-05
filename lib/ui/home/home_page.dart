@@ -1,7 +1,9 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kart_flutter/domain/models/piloto/piloto.dart';
+import 'package:kart_flutter/routing/routes.dart';
 import 'package:kart_flutter/ui/home/home_viewmodel.dart';
 import 'package:kart_flutter/ui/home/widgets/grafico_home.dart';
 
@@ -82,12 +84,8 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               Text(
                                 temporadaAtual.descricao,
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.titleLarge?.copyWith(
-                                  color: Theme.of(context).colorScheme.surface,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: Theme.of(context).textTheme.titleLarge
+                                    ?.copyWith(fontWeight: FontWeight.bold),
                               ),
                               Container(
                                 decoration: BoxDecoration(
@@ -101,13 +99,9 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   child: Row(
                                     children: [
-                                      Icon(
+                                      const Icon(
                                         Icons.star_purple500_sharp,
                                         size: 16,
-                                        color:
-                                            Theme.of(
-                                              context,
-                                            ).colorScheme.surface,
                                       ),
                                       const SizedBox(width: 4),
                                       Text(
@@ -115,10 +109,6 @@ class _HomePageState extends State<HomePage> {
                                         style: Theme.of(
                                           context,
                                         ).textTheme.bodyMedium?.copyWith(
-                                          color:
-                                              Theme.of(
-                                                context,
-                                              ).colorScheme.surface,
                                           fontWeight: FontWeight.w800,
                                         ),
                                       ),
@@ -131,7 +121,6 @@ class _HomePageState extends State<HomePage> {
                           // Segunda linha
                           const SizedBox(height: 12),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               _iconInfo(
                                 'Pilotos',
@@ -156,12 +145,12 @@ class _HomePageState extends State<HomePage> {
                           const SizedBox(height: 12),
                           FilledButton(
                             style: FilledButton.styleFrom(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.surface,
+                              backgroundColor: Colors.white,
                               foregroundColor:
                                   Theme.of(context).colorScheme.primary,
                             ),
-                            onPressed: () {},
+                            onPressed:
+                                () => context.pushNamed(Routes.temporadas),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -188,25 +177,22 @@ class _HomePageState extends State<HomePage> {
                   Row(
                     children: [
                       _iconButton(
-                        Icons.flag,
-                        'Nova Corrida',
-                        () {},
-                        Theme.of(context).colorScheme.primary,
-                        Theme.of(context).colorScheme.primaryContainer,
+                        icon: Icons.flag,
+                        title: 'Nova Corrida',
+                        onTap: () {},
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                       _iconButton(
-                        Icons.person_add,
-                        'Novo Piloto',
-                        () {},
-                        const Color(0xFF38d2c0),
-                        const Color.fromARGB(255, 228, 243, 247),
+                        icon: Icons.person_add,
+                        title: 'Novo Piloto',
+                        onTap: () {},
+                        color: const Color(0xFF38d2c0),
                       ),
                       _iconButton(
-                        Icons.calendar_today,
-                        'Nova Temporada',
-                        () {},
-                        const Color(0xFFed8b5f),
-                        const Color.fromARGB(255, 245, 233, 227),
+                        icon: Icons.calendar_today,
+                        title: 'Nova Temporada',
+                        onTap: () {},
+                        color: const Color(0xFFed8b5f),
                       ),
                     ],
                   ),
@@ -252,33 +238,26 @@ class _HomePageState extends State<HomePage> {
     return Expanded(
       child: Column(
         children: [
-          Icon(icon, color: Theme.of(context).colorScheme.surface),
+          Icon(icon),
           const SizedBox(height: 8),
           Text(
             value,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: Theme.of(context).colorScheme.surface,
-              fontWeight: FontWeight.bold,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
-          Text(
-            title,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: Theme.of(context).colorScheme.surface,
-            ),
-          ),
+          Text(title, style: Theme.of(context).textTheme.bodySmall),
         ],
       ),
     );
   }
 
-  Widget _iconButton(
-    IconData icon,
-    String title,
-    VoidCallback onTap,
-    Color iconColor,
-    Color backgroundColor,
-  ) {
+  Widget _iconButton({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+    required Color color,
+  }) {
     return Expanded(
       child: InkWell(
         splashColor: Colors.transparent,
@@ -291,16 +270,17 @@ class _HomePageState extends State<HomePage> {
               height: 48,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: backgroundColor,
+                color: color.withAlpha(30),
               ),
-              child: Icon(icon, color: iconColor),
+              child: Icon(icon, color: color),
             ),
             const SizedBox(height: 8),
             Text(
               title,
+              textAlign: TextAlign.center,
               style: Theme.of(
                 context,
-              ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
           ],
         ),

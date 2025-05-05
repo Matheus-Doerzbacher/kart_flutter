@@ -16,6 +16,38 @@ class GraficoHome extends StatefulWidget {
 
 class _GraficoHomeState extends State<GraficoHome>
     with TickerProviderStateMixin {
+  // Controlador de animação
+  late AnimationController _animationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _setupAnimationController();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Restart animation when visible again
+    _animationController
+      ..reset()
+      ..forward();
+  }
+
+  void _setupAnimationController() {
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    );
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final topThree =
@@ -66,7 +98,7 @@ class _GraficoHomeState extends State<GraficoHome>
                       // Podium background
                       Container(
                         height: 80,
-                        margin: const EdgeInsets.only(top: 100),
+                        margin: const EdgeInsets.only(top: 60),
                         decoration: BoxDecoration(
                           color: Theme.of(
                             context,
@@ -90,137 +122,154 @@ class _GraficoHomeState extends State<GraficoHome>
                                           ? 140.0
                                           : 120.0);
 
-                              return TweenAnimationBuilder<double>(
-                                tween: Tween<double>(begin: 0, end: 1),
-                                duration: Duration(
-                                  milliseconds:
-                                      700 +
-                                      (piloto.temporadaAtual!.posicao! * 300),
+                              // Criar uma animação que depende do controller
+                              final delayedAnimation = CurvedAnimation(
+                                parent: _animationController,
+                                curve: Interval(
+                                  // ignore: lines_longer_than_80_chars
+                                  // Começar em momentos diferentes baseado na posição
+                                  0.2 * (piloto.temporadaAtual!.posicao! - 1),
+                                  1,
+                                  curve: Curves.elasticOut,
                                 ),
-                                curve: Curves.elasticOut,
-                                builder: (context, animValue, child) {
+                              );
+
+                              return AnimatedBuilder(
+                                animation: delayedAnimation,
+                                builder: (context, child) {
                                   return Transform.translate(
-                                    offset: Offset(0, (1.0 - animValue) * 100),
-                                    child: AnimatedOpacity(
-                                      opacity: animValue,
-                                      duration: const Duration(
-                                        milliseconds: 500,
+                                    offset: Offset(
+                                      0,
+                                      (1.0 - delayedAnimation.value) * 100,
+                                    ),
+                                    child: Opacity(
+                                      opacity: delayedAnimation.value.clamp(
+                                        0.0,
+                                        1.0,
                                       ),
                                       child: child,
                                     ),
                                   );
                                 },
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    // Driver image/avatar
-                                    CircleAvatar(
-                                      radius: isFirst ? 40.0 : 30.0,
-                                      backgroundColor: _getPositionColor(
-                                        piloto.temporadaAtual!.posicao!,
-                                        context,
-                                      ),
-                                      child: CircleAvatar(
-                                        radius: isFirst ? 36.0 : 26.0,
-                                        backgroundColor:
-                                            Theme.of(
-                                              context,
-                                            ).colorScheme.surface,
-                                        backgroundImage:
-                                            piloto.urlFoto != null
-                                                ? NetworkImage(piloto.urlFoto!)
-                                                : null,
-                                        child:
-                                            piloto.urlFoto == null
-                                                ? Icon(
-                                                  Icons.person,
-                                                  size: isFirst ? 36.0 : 26.0,
-                                                  color:
-                                                      Theme.of(
-                                                        context,
-                                                      ).colorScheme.primary,
-                                                )
-                                                : null,
-                                      ),
-                                    ),
-
-                                    // Podium pillar
-                                    Container(
-                                      width: isFirst ? 80.0 : 60.0,
-                                      height: podiumHeight,
-                                      margin: const EdgeInsets.symmetric(
-                                        horizontal: 5,
-                                        vertical: 8,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter,
-                                          colors: [
-                                            _getPositionColor(
-                                              piloto.temporadaAtual!.posicao!,
-                                              context,
-                                            ),
-                                            _getPositionColor(
-                                              piloto.temporadaAtual!.posicao!,
-                                              context,
-                                            ).withAlpha(200),
-                                          ],
-                                        ),
-                                        borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(8),
-                                          topRight: Radius.circular(8),
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              // ignore: lines_longer_than_80_chars
-                                              '#${piloto.temporadaAtual!.posicao}',
-                                              style: Theme.of(
-                                                context,
-                                              ).textTheme.titleMedium!.copyWith(
-                                                color:
-                                                    Theme.of(
-                                                      context,
-                                                    ).colorScheme.surface,
-                                                fontWeight: FontWeight.w900,
-                                              ),
-                                            ),
-                                            Text(
-                                              // ignore: lines_longer_than_80_chars
-                                              '${piloto.temporadaAtual!.pontos} pts',
-                                              style: Theme.of(
-                                                context,
-                                              ).textTheme.bodyMedium!.copyWith(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-
-                                    // Driver name
-                                    SizedBox(
-                                      width: 80,
-                                      child: Text(
-                                        piloto.nome.isNotEmpty
-                                            ? piloto.nome
-                                            : piloto.nome.split(' ').first,
-                                        style: Theme.of(
+                                child: SizedBox(
+                                  width: isFirst ? 100.0 : 80.0,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      // Driver image/avatar
+                                      CircleAvatar(
+                                        radius: isFirst ? 40.0 : 30.0,
+                                        backgroundColor: _getPositionColor(
+                                          piloto.temporadaAtual!.posicao!,
                                           context,
-                                        ).textTheme.labelMedium!.copyWith(
-                                          fontWeight: FontWeight.bold,
                                         ),
-                                        textAlign: TextAlign.center,
-                                        overflow: TextOverflow.ellipsis,
+                                        child: CircleAvatar(
+                                          radius: isFirst ? 36.0 : 26.0,
+                                          backgroundColor:
+                                              Theme.of(
+                                                context,
+                                              ).colorScheme.surface,
+                                          backgroundImage:
+                                              piloto.urlFoto != null
+                                                  ? NetworkImage(
+                                                    piloto.urlFoto!,
+                                                  )
+                                                  : null,
+                                          child:
+                                              piloto.urlFoto == null
+                                                  ? Icon(
+                                                    Icons.person,
+                                                    size: isFirst ? 36.0 : 26.0,
+                                                    color:
+                                                        Theme.of(
+                                                          context,
+                                                        ).colorScheme.primary,
+                                                  )
+                                                  : null,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+
+                                      // Podium pillar
+                                      Container(
+                                        width: isFirst ? 80.0 : 60.0,
+                                        height: podiumHeight,
+                                        margin: const EdgeInsets.symmetric(
+                                          horizontal: 5,
+                                          vertical: 8,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                            colors: [
+                                              _getPositionColor(
+                                                piloto.temporadaAtual!.posicao!,
+                                                context,
+                                              ),
+                                              _getPositionColor(
+                                                piloto.temporadaAtual!.posicao!,
+                                                context,
+                                              ).withAlpha(200),
+                                            ],
+                                          ),
+                                          borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(8),
+                                            topRight: Radius.circular(8),
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                // ignore: lines_longer_than_80_chars
+                                                '#${piloto.temporadaAtual!.posicao}',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleMedium!
+                                                    .copyWith(
+                                                      color:
+                                                          Theme.of(
+                                                            context,
+                                                          ).colorScheme.surface,
+                                                      fontWeight:
+                                                          FontWeight.w900,
+                                                    ),
+                                              ),
+                                              Text(
+                                                // ignore: lines_longer_than_80_chars
+                                                '${piloto.temporadaAtual!.pontos} pts',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyMedium!
+                                                    .copyWith(
+                                                      color: Colors.white,
+                                                    ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+
+                                      // Driver name
+                                      SizedBox(
+                                        width: 80,
+                                        child: Text(
+                                          piloto.nome.isNotEmpty
+                                              ? piloto.nome
+                                              : piloto.nome.split(' ').first,
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.bodyLarge!.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             }).toList(),
