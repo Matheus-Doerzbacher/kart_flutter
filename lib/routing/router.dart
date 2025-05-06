@@ -4,8 +4,8 @@ import 'package:kart_flutter/routing/routes.dart';
 import 'package:kart_flutter/ui/core/navigation/bottom_nav_bar.dart';
 import 'package:kart_flutter/ui/corridas/corridas_page.dart';
 import 'package:kart_flutter/ui/home/home_page.dart';
-import 'package:kart_flutter/ui/perfil/perfil_page.dart';
 import 'package:kart_flutter/ui/pilotos/pilotos_page.dart';
+import 'package:kart_flutter/ui/pistas/pistas_page.dart';
 import 'package:kart_flutter/ui/temporadas/temporadas_page.dart';
 import 'package:provider/provider.dart';
 
@@ -36,9 +36,9 @@ GoRouter appRouter() => GoRouter(
           builder: (context, state) => const CorridasPage(),
         ),
         GoRoute(
-          path: '/${Routes.perfil}',
-          name: Routes.perfil,
-          builder: (context, state) => const PerfilPage(),
+          path: '/${Routes.pistas}',
+          name: Routes.pistas,
+          builder: (context, state) => const PistasPage(),
         ),
       ],
     ),

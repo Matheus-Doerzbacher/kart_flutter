@@ -9,7 +9,7 @@ class BottomNavBar extends StatelessWidget {
     {'icon': Icons.home, 'route': Routes.home, 'label': 'Home'},
     {'icon': Icons.people, 'route': Routes.pilotos, 'label': 'Pilotos'},
     {'icon': Icons.flag, 'route': Routes.corridas, 'label': 'Corridas'},
-    {'icon': Icons.person, 'route': Routes.perfil, 'label': 'Perfil'},
+    {'icon': Icons.map, 'route': Routes.pistas, 'label': 'Pistas'},
   ];
 
   @override
@@ -45,7 +45,7 @@ class BottomNavBar extends StatelessWidget {
       return 1;
     } else if (routePath == '/${Routes.corridas}') {
       return 2;
-    } else if (routePath == '/${Routes.perfil}') {
+    } else if (routePath == '/${Routes.pistas}') {
       return 3;
     }
     return 0;

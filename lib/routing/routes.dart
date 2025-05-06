@@ -8,5 +8,5 @@ class Routes {
 
   static const corridas = 'corridas';
 
-  static const perfil = 'perfil';
+  static const pistas = 'pistas';
 }

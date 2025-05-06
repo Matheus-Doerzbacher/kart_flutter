@@ -35,6 +35,14 @@ class _HomePageState extends State<HomePage> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.pushNamed(Routes.pistas);
+            },
+            icon: const Icon(Icons.person),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(

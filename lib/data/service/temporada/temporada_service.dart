@@ -52,4 +52,48 @@ class TemporadaService {
       return Failure(Exception(e));
     }
   }
+
+  AsyncResult<Temporada> insertTemporada(Temporada temporada) async {
+    try {
+      final response = await _clientHttp.post(
+        '/temporadas',
+        temporada.toJson(),
+      );
+      return response.fold((responseBody) {
+        final data = jsonDecode(responseBody) as Map<String, dynamic>;
+        return Success(Temporada.fromJson(data));
+      }, Failure.new);
+    } catch (e) {
+      _log.severe('Erro ao inserir temporada', e);
+      return Failure(Exception(e));
+    }
+  }
+
+  AsyncResult<Temporada> updateTemporada(Temporada temporada) async {
+    try {
+      final response = await _clientHttp.put(
+        '/temporadas/${temporada.idTemporada}',
+        temporada.toJson(),
+      );
+      return response.fold((responseBody) {
+        final data = jsonDecode(responseBody) as Map<String, dynamic>;
+        return Success(Temporada.fromJson(data));
+      }, Failure.new);
+    } catch (e) {
+      _log.severe('Erro ao atualizar temporada', e);
+      return Failure(Exception(e));
+    }
+  }
+
+  AsyncResult<Unit> deleteTemporada(int idTemporada) async {
+    try {
+      final response = await _clientHttp.delete('/temporadas/$idTemporada');
+      return response.fold((responseBody) {
+        return const Success(unit);
+      }, Failure.new);
+    } catch (e) {
+      _log.severe('Erro ao deletar temporada', e);
+      return Failure(Exception(e));
+    }
+  }
 }

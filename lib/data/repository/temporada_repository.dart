@@ -19,4 +19,16 @@ class TemporadaRepository {
   AsyncResult<int> getParticipantesDaTemporada(int idTemporada) async {
     return _temporadaService.getParticipantesDaTemporada(idTemporada);
   }
+
+  AsyncResult<Temporada> insertTemporada(Temporada temporada) async {
+    return _temporadaService.insertTemporada(temporada);
+  }
+
+  AsyncResult<Temporada> updateTemporada(Temporada temporada) async {
+    return _temporadaService.updateTemporada(temporada);
+  }
+
+  AsyncResult<Unit> deleteTemporada(int idTemporada) async {
+    return _temporadaService.deleteTemporada(idTemporada);
+  }
 }
