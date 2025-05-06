@@ -1,16 +1,17 @@
 import 'dart:convert';
 
-import 'package:kart_flutter/data/service/client_http.dart';
+import 'package:kart_flutter/data/service/core/http_service.dart';
 import 'package:kart_flutter/domain/models/corrida/corrida.dart';
 import 'package:result_dart/result_dart.dart';
 
 class CorridaService {
-  final ClientHttp _clientHttp;
+  final HttpService _httpService;
 
-  CorridaService({required ClientHttp clientHttp}) : _clientHttp = clientHttp;
+  CorridaService({required HttpService httpService})
+    : _httpService = httpService;
 
   AsyncResult<List<Corrida>> getCorridasDaTemporada(int idTemporada) async {
-    final result = await _clientHttp.get('/corridas/temporada/$idTemporada');
+    final result = await _httpService.get('/corridas/temporada/$idTemporada');
 
     return result.fold((json) {
       final data = jsonDecode(json) as List<dynamic>;

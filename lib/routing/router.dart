@@ -4,6 +4,7 @@ import 'package:kart_flutter/routing/routes.dart';
 import 'package:kart_flutter/ui/core/navigation/bottom_nav_bar.dart';
 import 'package:kart_flutter/ui/corridas/corridas_page.dart';
 import 'package:kart_flutter/ui/home/home_page.dart';
+import 'package:kart_flutter/ui/login/login_page.dart';
 import 'package:kart_flutter/ui/pilotos/pilotos_page.dart';
 import 'package:kart_flutter/ui/pistas/pistas_page.dart';
 import 'package:kart_flutter/ui/temporadas/temporadas_page.dart';
@@ -15,6 +16,11 @@ GoRouter appRouter() => GoRouter(
   // initialLocation: '/${Routes.temporadas}/1',
   debugLogDiagnostics: true,
   routes: [
+    GoRoute(
+      path: '/${Routes.login}',
+      name: Routes.login,
+      builder: (context, state) => LoginPage(viewModel: context.read()),
+    ),
     ShellRoute(
       builder: (context, state, child) {
         return Scaffold(body: child, bottomNavigationBar: BottomNavBar());

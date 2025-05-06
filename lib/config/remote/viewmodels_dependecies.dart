@@ -1,6 +1,6 @@
 import 'package:kart_flutter/ui/home/home_viewmodel.dart';
+import 'package:kart_flutter/ui/login/login_viewmodel.dart';
 import 'package:kart_flutter/ui/temporadas/temporadas_viewmodel.dart';
-import 'package:kart_flutter/ui/temporadas/widgets/modal_temporada_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
@@ -25,8 +25,14 @@ class ViewModelsDependecies {
       ),
       ChangeNotifierProvider(
         create:
-            (context) =>
-                ModalTemporadaViewModel(temporadaRepository: context.read()),
+            (context) => TemporadasViewmodel(
+              temporadaRepository: context.read(),
+              pilotoRepository: context.read(),
+              corridaRepository: context.read(),
+            ),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => LoginViewModel(loginRepository: context.read()),
       ),
     ];
   }

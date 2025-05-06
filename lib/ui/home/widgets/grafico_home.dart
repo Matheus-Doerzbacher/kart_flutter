@@ -229,10 +229,7 @@ class _GraficoHomeState extends State<GraficoHome>
                                                     .textTheme
                                                     .titleMedium!
                                                     .copyWith(
-                                                      color:
-                                                          Theme.of(
-                                                            context,
-                                                          ).colorScheme.surface,
+                                                      color: Colors.white,
                                                       fontWeight:
                                                           FontWeight.w900,
                                                     ),

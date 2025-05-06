@@ -2,10 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kart_flutter/data/repository/login_repository.dart';
 import 'package:kart_flutter/domain/models/piloto/piloto.dart';
 import 'package:kart_flutter/routing/routes.dart';
 import 'package:kart_flutter/ui/home/home_viewmodel.dart';
 import 'package:kart_flutter/ui/home/widgets/grafico_home.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   final HomeViewModel viewModel;
@@ -17,15 +19,27 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<Piloto>? value;
+  bool _isInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    widget.viewModel.getData.execute();
+    // Schedule getData to run after the first frame is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        widget.viewModel.getData.execute();
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!_isInitialized) {
+      _isInitialized = true;
+    }
+
+    final isLoggedIn = context.watch<LoginRepository>().isAuthenticated;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -36,12 +50,20 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         actions: [
-          IconButton(
-            onPressed: () {
-              context.pushNamed(Routes.pistas);
-            },
-            icon: const Icon(Icons.person),
-          ),
+          if (isLoggedIn)
+            IconButton(
+              onPressed: () async {
+                await context.read<LoginRepository>().logout();
+              },
+              icon: const Icon(Icons.logout),
+            )
+          else
+            IconButton(
+              onPressed: () {
+                context.pushNamed(Routes.login);
+              },
+              icon: const Icon(Icons.person),
+            ),
         ],
       ),
       body: SingleChildScrollView(
@@ -216,57 +238,32 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
+                  if (isLoggedIn) ...[
+                    const SizedBox(height: 24),
+                    Row(
+                      children: [
+                        _iconButton(
+                          icon: Icons.flag,
+                          title: 'Nova Corrida',
+                          onTap: () {},
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        _iconButton(
+                          icon: Icons.person_add,
+                          title: 'Novo Piloto',
+                          onTap: () {},
+                          color: const Color(0xFF38d2c0),
+                        ),
+                        _iconButton(
+                          icon: Icons.calendar_today,
+                          title: 'Nova Temporada',
+                          onTap: () {},
+                          color: const Color(0xFFed8b5f),
+                        ),
+                      ],
+                    ),
+                  ],
                   const SizedBox(height: 24),
-                  Row(
-                    children: [
-                      _iconButton(
-                        icon: Icons.flag,
-                        title: 'Nova Corrida',
-                        onTap: () {},
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      _iconButton(
-                        icon: Icons.person_add,
-                        title: 'Novo Piloto',
-                        onTap: () {},
-                        color: const Color(0xFF38d2c0),
-                      ),
-                      _iconButton(
-                        icon: Icons.calendar_today,
-                        title: 'Nova Temporada',
-                        onTap: () {},
-                        color: const Color(0xFFed8b5f),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  // Column(
-                  //   children: [
-                  //     Row(
-                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //       children: [
-                  //         Text(
-                  //           'Top Pilotos',
-                  //           style: Theme.of(context).textTheme.titleLarge
-                  //               ?.copyWith(fontWeight: FontWeight.w500),
-                  //         ),
-                  //         TextButton.icon(
-                  //           onPressed: () {},
-                  // ignore: lines_longer_than_80_chars
-                  //           icon: const Icon(Icons.arrow_forward_ios, size: 14),
-                  //           label: const Text(
-                  //             'Ver Ranking completo',
-                  //             style: TextStyle(
-                  //               fontWeight: FontWeight.w500,
-                  //               fontSize: 15,
-                  //             ),
-                  //           ),
-                  //           iconAlignment: IconAlignment.end,
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ],
-                  // ),
                   GraficoHome(pilotos: widget.viewModel.pilotosDaTemporada!),
                 ],
               );

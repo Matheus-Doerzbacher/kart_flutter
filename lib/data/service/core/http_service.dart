@@ -9,7 +9,7 @@ import 'package:result_dart/result_dart.dart';
 
 typedef BodyResponse = String;
 
-class ClientHttp {
+class HttpService {
   final String _baseUrl = 'http://127.0.0.1:8000/api/v1';
 
   String? _bearerToken;
@@ -18,7 +18,7 @@ class ClientHttp {
     _bearerToken = token;
   }
 
-  final _log = Logger('ClientHttp');
+  final _log = Logger('HttpService');
 
   void Function()? onUnauthorized;
 
@@ -154,6 +154,32 @@ class ClientHttp {
       }
     } on Exception catch (e) {
       _log.severe('Erro ao editar dados: $e');
+      return Failure(e);
+    }
+  }
+
+  AsyncResult<BodyResponse> postFormUrlEncoded(
+    String endpoint,
+    Map<String, String> data,
+  ) async {
+    try {
+      final url = Uri.parse(_composeUrl(endpoint));
+      final formHeaders = Map<String, String>.from(headers);
+      formHeaders[HttpHeaders.contentTypeHeader] =
+          'application/x-www-form-urlencoded';
+
+      final response = await http.post(url, headers: formHeaders, body: data);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final responseData = utf8.decode(response.bodyBytes);
+        return Success(responseData);
+      } else {
+        return Failure(
+          Exception('Erro na solicitação http POST: ${response.body}'),
+        );
+      }
+    } on Exception catch (e) {
+      _log.warning('Erro ao enviar formulário: $e');
       return Failure(e);
     }
   }

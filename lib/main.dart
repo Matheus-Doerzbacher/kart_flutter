@@ -1,11 +1,14 @@
+import 'package:encrypt_shared_preferences/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:kart_flutter/config/dependencies.dart';
 import 'package:kart_flutter/routing/router.dart';
 import 'package:kart_flutter/ui/core/theme/app_theme.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  const _key = '1234567890123123';
+  await EncryptedSharedPreferences.initialize(_key);
   runApp(MultiProvider(providers: providers, child: const MyApp()));
 }
 

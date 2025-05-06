@@ -1,4 +1,4 @@
-import 'package:kart_flutter/data/service/corrida/corrida_service.dart';
+import 'package:kart_flutter/data/service/corrida_service.dart';
 import 'package:kart_flutter/domain/models/corrida/corrida.dart';
 import 'package:result_dart/result_dart.dart';
 

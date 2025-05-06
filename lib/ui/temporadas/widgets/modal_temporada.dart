@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kart_flutter/domain/models/temporada/temporada.dart';
-import 'package:kart_flutter/ui/temporadas/widgets/modal_temporada_viewmodel.dart';
+import 'package:kart_flutter/ui/temporadas/temporadas_viewmodel.dart';
 
 class ModalTemporada extends StatefulWidget {
   final Temporada? temporada;
-  final ModalTemporadaViewModel viewModel;
+  final TemporadasViewmodel viewModel;
   const ModalTemporada({super.key, this.temporada, required this.viewModel});
 
   @override

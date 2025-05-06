@@ -1,6 +1,8 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:kart_flutter/data/repository/login_repository.dart';
 import 'package:kart_flutter/domain/models/corrida/corrida.dart';
 import 'package:kart_flutter/domain/models/piloto/piloto.dart';
 import 'package:kart_flutter/domain/models/temporada/temporada.dart';
@@ -29,9 +31,16 @@ class _TemporadasPageState extends State<TemporadasPage> {
   }
 
   @override
+  void didUpdateWidget(covariant TemporadasPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+
+    final isLoggedIn = context.watch<LoginRepository>().isAuthenticated;
 
     void _showModalTemporada(Temporada? temporada) {
       showModal(
@@ -52,10 +61,13 @@ class _TemporadasPageState extends State<TemporadasPage> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Temporadas')),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showModalTemporada(null),
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton:
+          isLoggedIn
+              ? FloatingActionButton(
+                onPressed: () => _showModalTemporada(null),
+                child: const Icon(Icons.add),
+              )
+              : null,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -97,6 +109,7 @@ class _TemporadasPageState extends State<TemporadasPage> {
                     colorScheme: colorScheme,
                     textTheme: textTheme,
                     pilotosTemporada: pilotosTemporada,
+                    isLoggedIn: isLoggedIn,
                   ),
                   const SizedBox(height: 24),
                   _cardClassificacao(
@@ -111,32 +124,77 @@ class _TemporadasPageState extends State<TemporadasPage> {
                     corridasTemporada: corridasTemporada,
                   ),
                   const SizedBox(height: 24),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      FilledButton.icon(
-                        onPressed:
-                            () => _showModalTemporada(temporadaSelecionada),
-                        label: const Text('Editar'),
-                        icon: const Icon(Icons.edit),
-                      ),
-                      FilledButton.icon(
-                        style: FilledButton.styleFrom(
-                          backgroundColor: colorScheme.error.withAlpha(30),
-                          foregroundColor: colorScheme.error,
+                  if (isLoggedIn)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        FilledButton.icon(
+                          onPressed:
+                              () => _showModalTemporada(temporadaSelecionada),
+                          label: const Text('Editar'),
+                          icon: const Icon(Icons.edit),
                         ),
-                        onPressed: () {},
-                        label: const Text('Excluir'),
-                        icon: const Icon(Icons.delete),
-                      ),
-                    ],
-                  ),
+                        _deleteButton(
+                          colorScheme: colorScheme,
+                          temporadaSelecionada: temporadaSelecionada,
+                        ),
+                      ],
+                    ),
                 ],
               );
             },
           ),
         ),
       ),
+    );
+  }
+
+  Widget _deleteButton({
+    required ColorScheme colorScheme,
+    required Temporada temporadaSelecionada,
+  }) {
+    return ListenableBuilder(
+      listenable: widget.viewModel.deleteTemporada,
+      builder: (context, _) {
+        return FilledButton.icon(
+          style: FilledButton.styleFrom(foregroundColor: colorScheme.error),
+          onPressed:
+              () => showDialog(
+                context: context,
+                builder:
+                    (context) => AlertDialog(
+                      title: const Text('Excluir temporada'),
+                      content: const Text(
+                        // ignore: lines_longer_than_80_chars
+                        'Tem certeza que deseja excluir a temporada?',
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('Cancelar'),
+                        ),
+                        FilledButton(
+                          style: FilledButton.styleFrom(
+                            backgroundColor: colorScheme.error.withAlpha(30),
+                            foregroundColor: colorScheme.error,
+                          ),
+                          onPressed: () async {
+                            await widget.viewModel.deleteTemporada.execute(
+                              temporadaSelecionada.idTemporada!,
+                            );
+                            if (context.mounted) {
+                              context.pop();
+                            }
+                          },
+                          child: const Text('Excluir'),
+                        ),
+                      ],
+                    ),
+              ),
+          label: const Text('Excluir'),
+          icon: const Icon(Icons.delete),
+        );
+      },
     );
   }
 
@@ -270,6 +328,7 @@ class _TemporadasPageState extends State<TemporadasPage> {
     required ColorScheme colorScheme,
     required TextTheme textTheme,
     required List<Piloto>? pilotosTemporada,
+    required bool isLoggedIn,
   }) {
     return Column(
       children: [
@@ -288,22 +347,23 @@ class _TemporadasPageState extends State<TemporadasPage> {
                 ),
               ],
             ),
-            TextButton(
-              onPressed: () {},
-              child: Row(
-                children: [
-                  Text(
-                    'Gerenciar',
-                    style: textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: colorScheme.primary,
+            if (isLoggedIn)
+              TextButton(
+                onPressed: () {},
+                child: Row(
+                  children: [
+                    Text(
+                      'Gerenciar',
+                      style: textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: colorScheme.primary,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 6),
-                  Icon(Icons.arrow_forward_ios, color: colorScheme.primary),
-                ],
+                    const SizedBox(width: 6),
+                    Icon(Icons.arrow_forward_ios, color: colorScheme.primary),
+                  ],
+                ),
               ),
-            ),
           ],
         ),
         SingleChildScrollView(
